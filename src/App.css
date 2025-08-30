@@ -1,0 +1,21 @@
+td {
+    border-top: solid black 1px;
+}
+
+th {
+    font-weight: 500;
+}
+
+th, td {
+    padding: 4px;
+}
+
+body {
+    font-family: "Vend Sans", sans-serif;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: large;
+    text-transform: uppercase;
+}
