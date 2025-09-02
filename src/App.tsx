@@ -71,12 +71,12 @@ function App() {
     window.onload = () => {
       setIsLoading(false);
     };
-  });
+  }, []);
 
   return (
     <div className="flex w-full p-6 justify-center items-center flex-col gap-5">
-      {(isLoading || topGainersLosers.isFetching) && (
-        <div className="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
+      {isLoading && (
+        <div className="bg-white absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
           <HashLoader />
         </div>
       )}
