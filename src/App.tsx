@@ -73,16 +73,14 @@ function App() {
     };
   });
 
-  if (isLoading || topGainersLosers.isFetching) {
-    return (
-      <div className="w-screen h-screen flex justify-center items-center">
-        <HashLoader />
-      </div>
-    );
-  }
-
   return (
     <div className="flex w-full p-6 justify-center items-center flex-col gap-5">
+      {(isLoading || topGainersLosers.isFetching) && (
+        <div className="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
+          <HashLoader />
+        </div>
+      )}
+
       <div className="text-center">
         <h1>Stock Price Checker</h1>
         <h2>Welcome to my demo website which shows the prices of stocks.</h2>
