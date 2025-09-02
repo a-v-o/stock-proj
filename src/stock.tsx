@@ -29,8 +29,7 @@ async function getPrice(symbol: string) {
 }
 
 async function getDaily(symbol: string) {
-  const endpoint =
-    baseUrl + "TIME_SERIES_DAILY_ADJUSTED&symbol=" + symbol + tokenSuffix;
+  const endpoint = baseUrl + "TIME_SERIES_DAILY&symbol=" + symbol + tokenSuffix;
   const result = await fetch(endpoint);
   return await result.json();
 }
@@ -46,13 +45,13 @@ export default function Stock() {
       const result: { "Global Quote": Record<string, string> } = await getPrice(
         symbol!
       );
-      return Object.values(result)[1];
+      return Object.values(result)[0];
     },
     staleTime: Infinity,
   });
 
   const dailySeries = useQuery({
-    queryKey: ["stockdDaily", symbol],
+    queryKey: ["stockDaily", symbol],
     queryFn: async () => {
       const result: AlphaVantageResponse = await getDaily(symbol!);
       return Object.values(result)[1];
@@ -75,13 +74,11 @@ export default function Stock() {
       const ohlcv = Object.values(chartData[interval]);
       return [ohlcv[0], ohlcv[3], ohlcv[2], ohlcv[1]];
     });
-    console.log(intraDayIntervals);
-    console.log(formattedIntraDay);
 
     const myChart = echarts.init(echartRef.current);
     const options: echarts.EChartsOption = {
       title: {
-        text: "Intraday (5min) chart",
+        text: "24 hour time series chart",
       },
       tooltip: {},
       xAxis: {
@@ -123,16 +120,16 @@ export default function Stock() {
 
   return (
     <div className="flex flex-col md:flex-row w-full justify-between items-center md:px-12">
-      <div className="px-8 pt-12">
-        <h2>Stock Info (24h)</h2>
+      <div className="px-8 pt-12 self-start">
+        <h2 className="uppercase font-bold text-lg">Stock Info (24h)</h2>
         <p>Symbol : {symbol}</p>
         {price.data ? (
           <div>
-            <p>Opening price: {price.data["02. open"]}</p>
-            <p>High: {price.data["03. high"]}</p>
-            <p>Low: {price.data["04. low"]}</p>
-            <p>Current price: {price.data["05. price"]}</p>
-            <p>Volume: {price.data["06. volume"]}</p>
+            <p>Opening price: ${price.data["02. open"]}</p>
+            <p>High: ${price.data["03. high"]}</p>
+            <p>Low: ${price.data["04. low"]}</p>
+            <p>Current price: ${price.data["05. price"]}</p>
+            <p>Volume: ${Number(price.data["06. volume"]).toLocaleString()}</p>
           </div>
         ) : null}
       </div>

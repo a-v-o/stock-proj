@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import "./App.css";
 import StockTable from "./components/stockTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { LuLoader } from "react-icons/lu";
+import { HashLoader } from "react-spinners";
 
 const baseUrl = "https://www.alphavantage.co/query?function=";
 const apiToken = import.meta.env.VITE_API_KEY;
@@ -23,6 +24,7 @@ async function getTokens(keywords: string) {
 
 function App() {
   const [keyword, setKeyword] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const topGainersLosers = useQuery({
     queryKey: ["gainersLosers"],
@@ -34,7 +36,6 @@ function App() {
         top_gainers: Record<string, string>[];
         top_losers: Record<string, string>[];
       } = await getLosersGainers();
-      console.log(result.most_actively_traded);
 
       return [
         result.most_actively_traded,
@@ -56,7 +57,6 @@ function App() {
     enabled: false,
   });
 
-  console.log(topGainersLosers.data);
   const mostTraded: Record<string, string>[] = topGainersLosers.data
     ? topGainersLosers.data[0]
     : [];
@@ -66,7 +66,20 @@ function App() {
   const topLosers: Record<string, string>[] = topGainersLosers.data
     ? topGainersLosers.data[2]
     : [];
-  console.log(matchedTokens.data);
+
+  useEffect(() => {
+    window.onload = () => {
+      setIsLoading(false);
+    };
+  });
+
+  if (isLoading || topGainersLosers.isFetching) {
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <HashLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full p-6 justify-center items-center flex-col gap-5">
